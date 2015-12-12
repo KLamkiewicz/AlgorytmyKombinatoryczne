@@ -6,7 +6,7 @@ public class KnuthMorris {
                 int m = pattern.length();
                 int pi[] = computePrefix(pattern);
                 int q = 0;
-
+                
                 for(int i=1; i<=n; i++){
                         while(q>0 && pattern.charAt(q)!=text.charAt(i-1)){
                                 q = pi[q];
@@ -15,7 +15,7 @@ public class KnuthMorris {
                                 q++;
                         }
                         if(q==m){
-                                return true;
+                            return true;
                        }
                 }
                 return false;

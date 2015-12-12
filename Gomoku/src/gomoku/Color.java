@@ -6,8 +6,10 @@ package gomoku;
  */
 enum Color {
 
-        BLACK("X"),
-        WHITE("O"),
+        BLACK("x"),
+        BLACK_V("X"),
+        WHITE("o"),
+        WHITE_V("O"),
         NONE("-");
 
         private int i;

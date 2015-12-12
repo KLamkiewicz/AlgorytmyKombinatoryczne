@@ -1,51 +1,33 @@
 package gomoku;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
-/**
- *
- * @author krzysiek
- */
 public class Gomoku {
 
     private static final int BOARD_SIZE = 15;
     private static final List<Cell> movesList = new ArrayList<>();
-    private static final Cell[][] board = new Cell[BOARD_SIZE][BOARD_SIZE];
-    private static final int FINAL_MOVE = 21;
-    public static  int z = 0;
-
+    private static final Cell[][] board = new Cell[BOARD_SIZE][BOARD_SIZE];  
+    private static final KnuthMorris km = new KnuthMorris();
+    private static final String patternBlackWin = "xxxxx";
+    private static final String patternWhiteWin = "ooooo";
+    
     public static void main(String[] args) {
-        
         init();
-       
         print();
-//        for(int i=0; i<movesList.size();i++){
-//            System.out.println(movesList.get(i).getMove());
-//        }
-        gomokuProblem(8, 8);
-        
+        gomokuProblem(14, 9);
         print();       
-        
-//        for(int i=0; i<movesList.size();i++){
-//            System.out.println(movesList.get(i).getMove());
-//        }
-
     }
-    static int i =0;
-    static int smallest = 1000;
     public static boolean gomokuProblem(int a, int b) {
-        if ( gomoku()  ) { //Check if won
-//            if( movesList.size()< smallest){
-//                smallest = movesList.size();
-//                System.out.println(smallest);
-//            }
-            
-            //if( movesList.size()<=FINAL_MOVE){
-                
-                return true;
+        if ( gomoku( a, b )  ) { //Check if won 
+           return true;
         }
+        
         List<Cell> possibleMoves = getPossibleMoves(a, b);
+        long seed = System.nanoTime();
+        Collections.shuffle(possibleMoves, new Random(seed));
         
         for( Cell cell : possibleMoves ){
             if( canBeSet( cell ) ){
@@ -56,8 +38,6 @@ public class Gomoku {
                 deleteLast();
             }
         }
-        
-
         return false;
     }
     
@@ -73,71 +53,49 @@ public class Gomoku {
         
         return possibleMoves;
     }
-    
-            
-    private static final KnuthMorris km = new KnuthMorris();
-    private static final String pattern = "XXXXX";
         
     
-    private static boolean gomoku(){
+    private static boolean gomoku(int a, int b) {
 
-        
-        for( int i=0; i<BOARD_SIZE; i++){
-            if(km.kmpMatcher( getRow(i), pattern)){
-                return true;
-            }
-            if(km.kmpMatcher(getColumn(i), pattern)){
-                return true;
-            }
-            if (km.kmpMatcher(getDiagonalLeft(i), pattern)) {
-                return true;
-            }
-        }    
+        //Check row
+        if (rowCheck(a, b, patternBlackWin)) {
+            board[a][b].setColor(Color.BLACK_V);
+            return true;
+        } else if (rowCheck(a, b, patternWhiteWin)) {
+            board[a][b].setColor(Color.WHITE_V);
+            return true;
+        }
+
+        //Check column
+        if (columnCheck(a, b, patternBlackWin)) {
+            board[a][b].setColor(Color.BLACK_V);
+            return true;
+        } else if (columnCheck(a, b, patternWhiteWin)) {
+            board[a][b].setColor(Color.WHITE_V);
+            return true;
+        }
+
         return false;
     }
     
-    private static String getRow(int i){
+    private static boolean rowCheck( int a, int b, String pattern ){
         String row = "";
-        for(int j=0; j<BOARD_SIZE; j++){
-            row+=board[i][j].getColor().toString();
+        for( int j=b-4; j<=b+4; j++){
+            if( j>=0 && j<BOARD_SIZE ){
+                row+=board[a][j].getColor();
+            }
         }
-        
-        return row;
+        return km.kmpMatcher(row, pattern);
     }
     
-    private static String getColumn(int i){
+    private static boolean columnCheck( int a, int b, String pattern ){
         String column = "";
-        for(int j=0; j<BOARD_SIZE; j++){
-            column+=board[j][i].getColor().toString();
+        for( int j=a-4; j<=a+4; j++){
+            if( j>=0 && j<BOARD_SIZE ){
+                column+=board[j][b].getColor();
+            }
         }
-        return column;
-    }
-    
-    private static String getDiagonalLeft(int i){
-        String diagonal = "";
-        int z = 0;
-        for( int k=BOARD_SIZE-i; k<BOARD_SIZE; k++){
-                diagonal += board[k][z].getColor().toString();
-                //System.out.println(k + " " + z);
-          
-            z++;
-        }
-        
-        return diagonal;
-    }
-    
-    private static String getDiagonalRight(int i){
-        String diagonal = "";
-        int z = 0;
-        for( int k=BOARD_SIZE-i; k<BOARD_SIZE; k++){
-                diagonal += board[k][z].getColor().toString();
-                System.out.println(k + " " + z);
-          
-            z++;
-        }
-        System.out.println(" x ");
-        
-        return diagonal;
+        return km.kmpMatcher(column, pattern);
     }
     
     private static void addMove( Cell cell ){
@@ -172,17 +130,17 @@ public class Gomoku {
         movesList.add(board[7][7].doAll(Color.BLACK, 1));
         movesList.add(board[8][7].doAll(Color.WHITE, 2));
         movesList.add(board[7][8].doAll(Color.BLACK, 3));
-//        movesList.add(board[7][6].doAll(Color.WHITE, 4));
-//        movesList.add(board[9][8].doAll(Color.BLACK, 5));
-//        movesList.add(board[6][7].doAll(Color.WHITE, 6));
-//        movesList.add(board[8][8].doAll(Color.BLACK, 7));
-//        movesList.add(board[10][8].doAll(Color.WHITE, 8));
-//        movesList.add(board[9][9].doAll(Color.BLACK, 9));
-//        movesList.add(board[10][10].doAll(Color.WHITE, 10));
+        
+//        //movesList.add(board[0][1].doAll(Color.BLACK, 4));
+//        movesList.add(board[3][1].doAll(Color.BLACK, 5));
+//        movesList.add(board[4][1].doAll(Color.BLACK, 6));
+//        movesList.add(board[5][1].doAll(Color.BLACK, 7));
+//        movesList.add(board[6][1].doAll(Color.BLACK, 8));
+        //movesList.add(board[][1].doAll(Color.BLACK, 8));
+        
     }
 
     public static void print() {
-        //for (int i = BOARD_SIZE - 1; i >= 0; i--) {
         for( int i=0; i<BOARD_SIZE; i++){
             for (int j = 0; j < BOARD_SIZE; j++) {
                 System.out.print(String.format("%3s", board[i][j]));
