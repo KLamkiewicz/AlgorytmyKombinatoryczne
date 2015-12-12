@@ -7,9 +7,9 @@ package gomoku;
 enum Color {
 
         BLACK("x"),
-        BLACK_V("X"),
+        BLACK_V("B"),
         WHITE("o"),
-        WHITE_V("O"),
+        WHITE_V("W"),
         NONE("-");
 
         private int i;

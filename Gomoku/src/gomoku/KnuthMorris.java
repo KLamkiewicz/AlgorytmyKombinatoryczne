@@ -1,6 +1,7 @@
 package gomoku;
 
 public class KnuthMorris {
+    
         boolean kmpMatcher(String text, String pattern){
                 int n = text.length();
                 int m = pattern.length();
