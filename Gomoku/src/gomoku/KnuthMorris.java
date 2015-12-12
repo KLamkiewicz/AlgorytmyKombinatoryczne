@@ -22,7 +22,7 @@ public class KnuthMorris {
                 return false;
         }
 
-        int[] computePrefix(String pattern){
+        private int[] computePrefix(String pattern){
                 int m = pattern.length();
                 int pi[] = new int[m];
                 pi[0] = 0;
